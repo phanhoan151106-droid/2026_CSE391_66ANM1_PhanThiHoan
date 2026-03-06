@@ -1,0 +1,132 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#4b0f3b;
+}
+
+/* layout */
+
+.wrapper{
+display:flex;
+padding:40px;
+gap:40px;
+}
+
+/* khung website */
+
+.site{
+width:1000px;
+border:3px solid #f4a742;
+background:white;
+}
+
+/* header */
+
+header{
+background:rgba(0,0,0,0.4);
+padding:15px;
+}
+
+.nav{
+display:flex;
+justify-content:space-between;
+}
+
+.logo{
+color:#ffd84d;
+font-weight:bold;
+}
+
+nav a{
+color:#ffd84d;
+margin-left:15px;
+text-decoration:none;
+}
+
+/* hero */
+
+.hero{
+height:400px;
+background:url("https://picsum.photos/1200/600?travel");
+background-size:cover;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.hero-box{
+background:rgba(0,0,0,0.6);
+color:white;
+padding:40px;
+text-align:center;
+}
+
+.hero-box button{
+margin-top:10px;
+padding:10px 15px;
+background:#ffd84d;
+border:none;
+}
+
+/* highlights */
+
+.highlights{
+background:#cfe8e8;
+padding:40px;
+text-align:center;
+}
+
+.cards{
+display:flex;
+justify-content:center;
+gap:20px;
+margin-top:20px;
+}
+
+.card{
+width:260px;
+background:white;
+border-radius:6px;
+overflow:hidden;
+}
+
+.card img{
+width:100%;
+height:150px;
+object-fit:cover;
+}
+
+.card p{
+padding:10px;
+font-weight:bold;
+}
+
+.card span{
+color:green;
+}
+
+/* footer */
+
+footer{
+background:#111;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+/* chữ bên phải */
+
+.code{
+color:#ff8bd4;
+font-family:monospace;
+font-size:18px;
+}
+
+pre{
+line-height:30px;
+}
