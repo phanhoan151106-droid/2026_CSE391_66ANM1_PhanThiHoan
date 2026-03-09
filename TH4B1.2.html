@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bộ Lọc & Tìm Kiếm Sinh Viên</title>
+<style>
+body{
+    font-family: Arial;
+    padding:20px;
+}
+
+.controls{
+    margin-bottom:15px;
+}
+
+input, select{
+    padding:6px;
+    margin-right:10px;
+}
+
+table{
+    border-collapse: collapse;
+    width:600px;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+th{
+    background:#f2f2f2;
+    cursor:pointer;
+}
+
+.no-result{
+    text-align:center;
+    color:red;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Danh sách sinh viên</h2>
+
+<div class="controls">
+    <input type="text" id="searchInput" placeholder="Tìm theo tên...">
+
+    <select id="filterSelect">
+        <option value="all">Tất cả</option>
+        <option value="Giỏi">Giỏi</option>
+        <option value="Khá">Khá</option>
+        <option value="Trung bình">Trung bình</option>
+        <option value="Yếu">Yếu</option>
+    </select>
+</div>
+
+<table>
+<thead>
+<tr>
+    <th>STT</th>
+    <th>Tên</th>
+    <th id="scoreHeader">Điểm</th>
+    <th>Xếp loại</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+</table>
+
+<script>
+
+const students = [
+    {name:"Nguyễn An", score:9},
+    {name:"Trần Bình", score:7.5},
+    {name:"Lê Chi", score:6},
+    {name:"Phạm Dũng", score:4.5},
+    {name:"Nguyễn Lan", score:8.2},
+    {name:"Hoàng Minh", score:5.5}
+];
+
+let filteredStudents = [...students];
+
+let sortAsc = true;
+
+function getRank(score){
+    if(score >= 8) return "Giỏi";
+    if(score >= 6.5) return "Khá";
+    if(score >= 5) return "Trung bình";
+    return "Yếu";
+}
+
+function renderTable(){
+
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML="";
+
+    if(filteredStudents.length === 0){
+        tbody.innerHTML = `<tr><td colspan="4" class="no-result">Không có kết quả</td></tr>`;
+        return;
+    }
+
+    filteredStudents.forEach((st,index)=>{
+
+        const rank = getRank(st.score);
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${index+1}</td>
+            <td>${st.name}</td>
+            <td>${st.score}</td>
+            <td>${rank}</td>
+        </tr>
+        `;
+    });
+}
+
+function applyFilters(){
+
+    const keyword = document.getElementById("searchInput").value.toLowerCase();
+    const filter = document.getElementById("filterSelect").value;
+
+    filteredStudents = students.filter(st => {
+
+        const matchName = st.name.toLowerCase().includes(keyword);
+        const rank = getRank(st.score);
+
+        const matchRank = (filter === "all" || rank === filter);
+
+        return matchName && matchRank;
+
+    });
+
+    filteredStudents.sort((a,b)=>{
+        return sortAsc ? a.score - b.score : b.score - a.score;
+    });
+
+    renderTable();
+}
+
+document.getElementById("searchInput").addEventListener("input",applyFilters);
+
+document.getElementById("filterSelect").addEventListener("change",applyFilters);
+
+document.getElementById("scoreHeader").addEventListener("click",()=>{
+
+    sortAsc = !sortAsc;
+
+    document.getElementById("scoreHeader").innerHTML =
+        "Điểm " + (sortAsc ? "▲" : "▼");
+
+    applyFilters();
+});
+
+applyFilters();
+
+</script>
+
+</body>
+</html>
