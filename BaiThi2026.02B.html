@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Danh mục học bổng</title>
+<style>
+    body { font-family: Arial; margin: 0; background: #f4f4f4; }
+
+    header, footer {
+        background: #333;
+        color: white;
+        text-align: left;
+        padding: 15px;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 900px;
+        margin: 30px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    input {
+        width: 98%;
+        padding: 10px;
+        margin: 6px 0;
+    }
+
+    .error {
+        color: red;
+        font-size: 13px;
+    }
+
+    button {
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-add {
+        background: #3a90ed;
+        color: white;
+        width: 150px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+
+    th {
+        background: #7bade3;
+        color: white;
+    }
+
+    .btn-del {
+        background: red;
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h2>HọcBổngPro</h2>
+</header>
+<h3>Danh mục học bổng</h3>
+<h5>Theo dõi đơn vị tài trợ, giá trị và hạn nộp hồ sơ.</h5>
+<div class="container">
+
+    <!-- FORM -->
+    <h3>Thêm học bổng mới</h3>
+    <form id="form">
+        <label>Tên học bổng</label>
+        <input type="text" id="name" placeholder="Tên chương trình">
+        <div class="error" id="errName"></div>
+
+        <label>Đơn vị tài trợ</label>
+        <input type="text" id="congty" placeholder="Công ty/quỹ">
+        <div class="error" id="errCongty"></div>
+
+        <label>Giá trị (VNĐ)</label>
+        <input type="giatri" id="giatri" placeholder="Ví dụ 15000000">
+        <div class="error" id="errGiatri"></div>
+
+        <label>Email</label>
+        <input type="text" id="email" placeholder="lienhe@example.vn">
+        <div class="error" id="errEmail"></div>
+
+        <label>Hạn nộp</label>
+        <input type="ngaynop" id="ngaynop" placeholder="dd/mm/yyyy">
+        <div class="error" id="errNgaynop"></div>
+
+        <br>
+        <button class="btn-add" type="submit">Lưu</button>
+        <button class="cancel" onclick="closeForm()">HỦY</button>
+    </form>
+
+    <!-- TABLE -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tên học bổng</th>
+                <th>Đơn vị tài trợ</th>
+                <th>Giá trị</th>
+                <th>Email</th>
+                <th>Hạn nộp</th>
+            </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
+
+</div>
+
+<footer>
+    <p>© 2026 HọcBổngPro. Mọi quyền được bảo lưu.</p>
+</footer>
+
+<script>const form = document.getElementById("form");
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let nameVal = document.getElementById("name").value.trim();
+    let congtyVal = document.getElementById("congty").value.trim();
+    let emailVal = document.getElementById("email").value.trim();
+    let giatriVal = document.getElementById("giatri").value;
+    let ngaynopVal = document.getElementById("ngaynop").value;
+
+    let ok = true;
+
+    // reset lỗi
+    document.getElementById("errName").innerText = "";
+    document.getElementById("errCongty").innerText = "";
+    document.getElementById("errEmail").innerText = "";
+    document.getElementById("errGiatri").innerText = "";
+    document.getElementById("errNgaynop").innerText = "";
+
+    if (nameVal === "") {
+        document.getElementById("errName").innerText = "Không được để trống";
+        ok = false;
+    }
+    if (congtyVal === "") {
+        document.getElementById("errCongty").innerText = "Không được để trống";
+        ok = false;
+    }
+    if (emailVal === "") {
+        document.getElementById("errEmail").innerText = "Không được để trống";
+        ok = false;
+    }
+    if (giatriVal === "") {
+        document.getElementById("errGiatri").innerText = "Không được để trống";
+        ok = false;
+    }
+    if (ngaynopVal === "") {
+        document.getElementById("errNgaynop").innerText = "Không được để trống";
+        ok = false;
+    }
+    if (nameVal.length >= 50) {
+        document.getElementById("errName").innerText = "Không được quá 50 kí tự.";
+        ok = false;
+    }
+    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regex.test(emailVal)) {
+        document.getElementById("errEmail").innerText = "Email không hợp lệ";
+        ok = false;
+    }
+
+
+    if (giatriVal.length < 0) {
+        document.getElementById("errGiatri").innerText = "Giá trị học bổng phải là số dương.";
+        ok = false;
+    }
+
+    if (!ok) return;
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    users.push({
+        name: nameVal,
+        email: emailVal,
+        congty:congtyVal,
+        ngaynop:ngaynopVal,
+        giatri: giatri.value
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    form.reset();
+    render();
+});
+
+function render() {
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let html = "";
+
+    users.forEach((u, i) => {
+        html += `
+        <tr>
+            <td>${u.name}</td>
+            <td>${u.congty}</td>
+            <td>${u.giatri}</td>
+            <td>${u.email}</td>
+            <td>${u.ngaynop}</td>
+        </tr>`;
+    });
+
+    document.getElementById("tbody").innerHTML = html;
+}
+function closeForm() {
+    document.getElementById("formBox").style.display = "none";
+}
+
+
+// load lần đầu
+render();
+</script>
+</html>
